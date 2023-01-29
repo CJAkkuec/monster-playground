@@ -33,7 +33,7 @@ const IceCream = styled.div`
   font-size: 3rem;
 `;
 
-function Playground({ emote, message, focusRef }) {
+function Playground({ focusRef, myMonster, otherMonsters }) {
   const [iceCreamPosition, setIceCreamPosition] = useState({
     x: -1000,
     y: -1000,
@@ -42,28 +42,30 @@ function Playground({ emote, message, focusRef }) {
 
   const playgroundWidth = 1000;
   const playgroundHeight = 1000;
-  const monsterWidth = 100;
-  const monsterHeight = 100;
+  const monsterWidth = myMonster.width;
+  const monsterHeight = myMonster.height;
+
   const { monsterPosition, handleKeyDown } = useMonsterMovement(
-    playgroundWidth,
-    playgroundHeight,
+    myMonster,
     monsterWidth,
-    monsterHeight
+    monsterHeight,
+    playgroundWidth,
+    playgroundHeight
   );
 
   useEffect(() => {
     let intervalId;
     const timeoutId = setTimeout(() => {
       setIceCreamPosition({
-        x: Math.floor(Math.random() * 950),
-        y: Math.floor(Math.random() * 950),
+        x: Math.floor(Math.random() * 900),
+        y: Math.floor(Math.random() * 900),
       });
       intervalId = setInterval(() => {
         setIceCreamPosition({ x: -1000, y: -1000 });
         setTimeout(() => {
           setIceCreamPosition({
-            x: Math.floor(Math.random() * 950),
-            y: Math.floor(Math.random() * 950),
+            x: Math.floor(Math.random() * 900),
+            y: Math.floor(Math.random() * 900),
           });
         }, 10000);
       }, 20000);
@@ -95,10 +97,11 @@ function Playground({ emote, message, focusRef }) {
       <Monster
         top={monsterPosition.y}
         left={monsterPosition.x}
-        emote={emote}
-        message={message}
-        counter={counter}
+        monster={myMonster}
       />
+      {otherMonsters.map((monster) => (
+        <Monster top={monster.y} left={monster.x} monster={monster} />
+      ))}
     </MonsterPlayground>
   );
 }

@@ -1,14 +1,5 @@
 import styled from "styled-components";
-import {
-  uniqueNamesGenerator,
-  adjectives,
-  animals,
-} from "unique-names-generator";
 import Emote from "../Emote";
-
-const randomName = uniqueNamesGenerator({
-  dictionaries: [adjectives, animals],
-});
 
 const UserBox = styled.div`
   position: absolute;
@@ -44,49 +35,19 @@ const UserMessage = styled.span`
   padding: 4px;
 `;
 
-const colors = ["green", "blue", "yellow", "purple"];
-const randomIndex = Math.floor(Math.random() * colors.length);
-const monsterColor = colors[randomIndex];
-
-let monsterSrc = "";
-
-switch (monsterColor) {
-  case "green":
-    {
-      monsterSrc = "./assets/monsters/green.gif";
-    }
-    break;
-  case "purple":
-    {
-      monsterSrc = "./assets/monsters/purple.gif";
-    }
-    break;
-  case "blue":
-    {
-      monsterSrc = "./assets/monsters/blue.gif";
-    }
-    break;
-  case "yellow":
-    {
-      monsterSrc = "./assets/monsters/yellow.gif";
-    }
-    break;
-  default:
-    break;
-}
-
-function Monster({ top, left, emote, message, counter }) {
-  console.log(message);
+function Monster({ top, left, monster }) {
   return (
     <>
       <UserBox top={top} left={left}>
         <UserName>
-          {randomName}: {counter}
+          {monster.name}: {monster.iceCream}
         </UserName>
-        <Emote emote={emote} />
-        {message !== "" && <UserMessage>{message}</UserMessage>}{" "}
+        <Emote emote={monster.emote} />
+        {monster.message !== null && (
+          <UserMessage>{monster.message}</UserMessage>
+        )}
       </UserBox>
-      <UserMonster src={monsterSrc} top={top} left={left} />
+      <UserMonster src={monster.img} top={top} left={left} />
     </>
   );
 }
