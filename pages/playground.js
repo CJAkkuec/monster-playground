@@ -14,12 +14,13 @@ const ButtonWrapper = styled.div`
 
 const users = [{ user: 1 }, { user: 2 }, { user: 3 }];
 
-function PlaygroundPage() {
-  const [otherMonsters, setOtherMonsters] = useState(
-    users.map((user) => monsterMaker())
-  );
+const initialMyMonster = monsterMaker();
+const initialOtherMonsters = users.map((user) => monsterMaker());
 
-  const [myMonster, setMyMonster] = useState(monsterMaker());
+function PlaygroundPage() {
+  const [otherMonsters, setOtherMonsters] = useState(initialOtherMonsters);
+  const [myMonster, setMyMonster] = useState(initialMyMonster);
+
   const [value, setValue] = useState("");
   const focusRef = useRef(null);
 
