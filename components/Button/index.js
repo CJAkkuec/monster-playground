@@ -5,18 +5,18 @@ const StyledButton = styled.button`
   outline: none;
   border: none;
   background: var(--gum);
-  width: 100px;
-  height: 100px;
+  padding: 1rem 2rem;
   font-size: 1.5rem;
   color: var(--cream);
 `;
 
-function Button({ onClick, action }) {
+function Button({ onClick, action, fontFredoka }) {
   return (
     <StyledButton
       onClick={() => {
         onClick(action);
       }}
+      className={fontFredoka}
     >
       {action === "happy"
         ? "Happy!"
@@ -24,6 +24,8 @@ function Button({ onClick, action }) {
         ? "Like!"
         : action === "star"
         ? "Excite!"
+        : action === "get"
+        ? "Random"
         : null}
     </StyledButton>
   );

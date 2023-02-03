@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Monster from "../Monster";
+import { useState, useEffect } from "react";
 import useMonsterMovement from "../../utils/useMonsterMovement";
-import { useEffect, useState } from "react";
 
 const MonsterPlayground = styled.div`
   position: relative;
@@ -33,12 +33,11 @@ const IceCream = styled.div`
   font-size: 3rem;
 `;
 
-function Playground({ focusRef, myMonster, otherMonsters }) {
+function Playground({ focusRef, myMonster, addIceCream }) {
   const [iceCreamPosition, setIceCreamPosition] = useState({
     x: -1000,
     y: -1000,
   });
-  const [counter, setCounter] = useState(0);
 
   const playgroundWidth = 1000;
   const playgroundHeight = 1000;
@@ -84,9 +83,9 @@ function Playground({ focusRef, myMonster, otherMonsters }) {
       monsterPosition.y <= iceCreamPosition.y + 60
     ) {
       setIceCreamPosition({ x: -1000, y: -1000 });
-      setCounter(counter + 1);
+      addIceCream();
     }
-  }, [monsterPosition, iceCreamPosition, counter]);
+  }, [monsterPosition, iceCreamPosition]);
 
   return (
     <MonsterPlayground ref={focusRef} onKeyDown={handleKeyDown} tabIndex="0">
@@ -97,11 +96,8 @@ function Playground({ focusRef, myMonster, otherMonsters }) {
       <Monster
         top={monsterPosition.y}
         left={monsterPosition.x}
-        monster={myMonster}
+        myMonster={myMonster}
       />
-      {otherMonsters.map((monster) => (
-        <Monster top={monster.y} left={monster.x} monster={monster} />
-      ))}
     </MonsterPlayground>
   );
 }

@@ -1,7 +1,5 @@
 import styled from "styled-components";
 import { useState, useRef, useEffect } from "react";
-import monsterMaker from "../utils/monsterMaker";
-
 import Layout from "../components/Layout";
 import Playground from "../components/Playground";
 import Button from "../components/Button";
@@ -12,87 +10,56 @@ const ButtonWrapper = styled.div`
   gap: 20px;
 `;
 
-const users = [{ user: 1 }, { user: 2 }, { user: 3 }];
-
-const initialMyMonster = monsterMaker();
-const initialOtherMonsters = users.map((user) => monsterMaker());
-
-function PlaygroundPage() {
-  const [otherMonsters, setOtherMonsters] = useState(initialOtherMonsters);
-  const [myMonster, setMyMonster] = useState(initialMyMonster);
-
+function PlaygroundPage({
+  myMonster,
+  onSubmit,
+  onClick,
+  handleAddIceCream,
+  fontFredoka,
+}) {
   const [value, setValue] = useState("");
   const focusRef = useRef(null);
-
-  // For Prototyping Purposes
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      pseudoMovement();
-    }, 1000);
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, []);
-
-  function pseudoMovement() {
-    const updatedMonsters = otherMonsters.map((monster) => {
-      let updatedMonster = {
-        ...monster,
-        x: Math.floor(Math.random() * 900),
-        y: Math.floor(Math.random() * 900),
-      };
-
-      return updatedMonster;
-    });
-
-    setOtherMonsters(updatedMonsters);
-  }
-  // For Prototyping Purposes
-
-  function handleClick(action) {
-    setMyMonster({ ...myMonster, emote: action });
-    setTimeout(() => {
-      setMyMonster({ ...myMonster, emote: null });
-    }, 3000);
-    focusRef.current.focus();
-  }
-
-  function handleSubmit(event) {
-    event.preventDefault();
-    setMyMonster({ ...myMonster, message: value });
-    setValue("");
-    setTimeout(() => {
-      setMyMonster({ ...myMonster, message: null });
-    }, 3000);
-    focusRef.current.focus();
-  }
 
   function handleChange(inputValue) {
     setValue(inputValue);
   }
 
   useEffect(() => {
-    focusRef.current.focus();
+    if (myMonster !== null) {
+      focusRef.current.focus();
+    }
   }, []);
 
   return (
     <Layout>
-      <Playground
-        focusRef={focusRef}
-        myMonster={myMonster}
-        otherMonsters={otherMonsters}
-      />
-      <ButtonWrapper>
-        <Button action="happy" onClick={handleClick} />
-        <Button action="heart" onClick={handleClick} />
-        <Button action="star" onClick={handleClick} />
-      </ButtonWrapper>
-      <MessageForm
-        onSubmit={handleSubmit}
-        onChange={handleChange}
-        message={myMonster.message}
-        value={value}
-      />
+      {myMonster !== null && (
+        <>
+          <Playground
+            focusRef={focusRef}
+            myMonster={myMonster}
+            addIceCream={handleAddIceCream}
+          />
+          <ButtonWrapper>
+            <Button
+              action="happy"
+              onClick={onClick}
+              fontFredoka={fontFredoka}
+            />
+            <Button
+              action="heart"
+              onClick={onClick}
+              fontFredoka={fontFredoka}
+            />
+            <Button action="star" onClick={onClick} fontFredoka={fontFredoka} />
+          </ButtonWrapper>
+          <MessageForm
+            onSubmit={onSubmit}
+            onChange={handleChange}
+            message={myMonster.message}
+            value={value}
+          />
+        </>
+      )}
     </Layout>
   );
 }

@@ -35,19 +35,37 @@ const UserMessage = styled.span`
   padding: 4px;
 `;
 
-function Monster({ top, left, monster }) {
+const Flex = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+function Monster({ top, left, myMonster, randomizeMode }) {
   return (
     <>
-      <UserBox top={top} left={left}>
-        <UserName>
-          {monster.name}: {monster.iceCream}
-        </UserName>
-        <Emote emote={monster.emote} />
-        {monster.message !== null && (
-          <UserMessage>{monster.message}</UserMessage>
-        )}
-      </UserBox>
-      <UserMonster src={monster.img} top={top} left={left} />
+      {!randomizeMode && (
+        <>
+          <UserBox top={top} left={left}>
+            <UserName>
+              {myMonster.name}: {myMonster.iceCream}
+            </UserName>
+            <Emote emote={myMonster.emote} />
+            {myMonster.message !== null && (
+              <UserMessage>{myMonster.message}</UserMessage>
+            )}
+          </UserBox>
+          <UserMonster src={myMonster.img} top={top} left={left} />
+        </>
+      )}
+      {randomizeMode && (
+        <>
+          <Flex>
+            <UserName>{myMonster.name}</UserName>
+            <UserMonster src={myMonster.img} />
+          </Flex>
+        </>
+      )}
     </>
   );
 }

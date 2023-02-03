@@ -3,12 +3,6 @@ import styled from "styled-components";
 import Layout from "../components/Layout";
 import { motion } from "framer-motion";
 
-import { Fredoka_One } from "@next/font/google";
-import { Covered_By_Your_Grace } from "@next/font/google";
-
-const fredoka = Fredoka_One({ weight: "400", subsets: ["latin"] });
-const yourGrace = Covered_By_Your_Grace({ weight: "400", subsets: ["latin"] });
-
 const StyledLink = styled(Link)`
   text-decoration: none;
   font-size: 2rem;
@@ -48,13 +42,13 @@ const Wrapper = styled.div`
   gap: 4rem;
 `;
 
-export default function HomePage() {
+export default function HomePage({ fontFredoka, fontYourGrace }) {
   return (
     <Layout>
       <Wrapper>
         <Headline>
           <Monster
-            className={yourGrace.className}
+            className={fontYourGrace}
             initial={{ opacity: 0, scale: 0.1, rotate: 50 }}
             animate={{ opacity: 1, scale: 1, rotate: 5 }}
             transition={{
@@ -68,7 +62,7 @@ export default function HomePage() {
             Monster
           </Monster>
           <Playground
-            className={fredoka.className}
+            className={fontFredoka}
             initial={{ opacity: 0, scale: 0.1, rotate: 30 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
             transition={{
@@ -92,7 +86,9 @@ export default function HomePage() {
             restDelta: 0.001,
           }}
         >
-          <StyledLink href="/playground">Play</StyledLink>
+          <StyledLink href="/create" className={fontFredoka}>
+            Play
+          </StyledLink>
         </motion.div>
       </Wrapper>
     </Layout>
