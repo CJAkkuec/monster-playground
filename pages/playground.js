@@ -16,20 +16,10 @@ function PlaygroundPage({
   onClick,
   handleAddIceCream,
   fontFredoka,
+  focusRef,
+  handleChange,
+  value,
 }) {
-  const [value, setValue] = useState("");
-  const focusRef = useRef(null);
-
-  function handleChange(inputValue) {
-    setValue(inputValue);
-  }
-
-  useEffect(() => {
-    if (myMonster !== null) {
-      focusRef.current.focus();
-    }
-  }, []);
-
   return (
     <Layout>
       {myMonster !== null && (

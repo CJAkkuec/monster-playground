@@ -23,6 +23,11 @@ function Emote({ emote }) {
         emoteSrc = "./assets/emotes/star.png";
       }
       break;
+    case "get":
+      {
+        emoteSrc = "./assets/emotes/get.png";
+      }
+      break;
     default:
       break;
   }

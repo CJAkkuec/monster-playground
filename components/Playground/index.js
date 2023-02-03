@@ -2,6 +2,8 @@ import styled from "styled-components";
 import Monster from "../Monster";
 import { useState, useEffect } from "react";
 import useMonsterMovement from "../../utils/useMonsterMovement";
+import getBoundingBox from "../../utils/getBoundingBox";
+import iceCreamCollisionCheck from "../../utils/iceCreamCollisionCheck";
 
 const MonsterPlayground = styled.div`
   position: relative;
@@ -31,6 +33,9 @@ const IceCream = styled.div`
   top: ${({ top }) => top}px;
   left: ${({ left }) => left}px;
   font-size: 3rem;
+  width: 60px;
+  height: 60px;
+  text-align: center;
 `;
 
 function Playground({ focusRef, myMonster, addIceCream }) {
@@ -43,6 +48,8 @@ function Playground({ focusRef, myMonster, addIceCream }) {
   const playgroundHeight = 1000;
   const monsterWidth = myMonster.width;
   const monsterHeight = myMonster.height;
+  const iceCreamWidth = 50;
+  const iceCreamHeight = 50;
 
   const { monsterPosition, handleKeyDown } = useMonsterMovement(
     myMonster,
@@ -75,17 +82,37 @@ function Playground({ focusRef, myMonster, addIceCream }) {
     };
   }, []);
 
+  const myMonsterBox = getBoundingBox(
+    monsterPosition,
+    monsterWidth,
+    monsterHeight
+  );
+  console.log(myMonsterBox);
+
+  const iceCreamBox = getBoundingBox(
+    iceCreamPosition,
+    iceCreamWidth,
+    iceCreamHeight
+  );
+
   useEffect(() => {
-    if (
-      monsterPosition.x >= iceCreamPosition.x - 60 &&
-      monsterPosition.x <= iceCreamPosition.x + 60 &&
-      monsterPosition.y >= iceCreamPosition.y - 60 &&
-      monsterPosition.y <= iceCreamPosition.y + 60
-    ) {
+    const check = iceCreamCollisionCheck(
+      myMonsterBox,
+      iceCreamBox,
+      iceCreamWidth
+    );
+
+    if (check) {
       setIceCreamPosition({ x: -1000, y: -1000 });
       addIceCream();
     }
   }, [monsterPosition, iceCreamPosition]);
+
+  useEffect(() => {
+    if (myMonster !== null) {
+      focusRef.current.focus();
+    }
+  }, []);
 
   return (
     <MonsterPlayground ref={focusRef} onKeyDown={handleKeyDown} tabIndex="0">
