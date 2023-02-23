@@ -9,9 +9,8 @@ function MessageForm({ onSubmit, onChange, message, value }) {
         type="text"
         maxLength={30}
         placeholder="30 char max"
-        value={message !== null ? "Wait ..." : value}
+        value={value}
         onChange={(event) => onChange(event.target.value)}
-        disabled={message !== null}
       />
     </Form>
   );

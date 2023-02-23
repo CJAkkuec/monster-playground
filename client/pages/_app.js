@@ -20,14 +20,12 @@ export default function App({ Component, pageProps }) {
   const [myMonster, setMyMonster] = useLocalStorageState("myMonster", {
     defaultValue: null,
   });
-  const [value, setValue] = useState("");
 
   const router = useRouter();
 
-  function handleChange(inputValue) {
-    setValue(inputValue);
-  }
-
+  // Only Business Logic required on the client
+  // Creates a monster, creates an id
+  // Monster is then handed over to the server
   function handleRandomizeMonster() {
     setMyMonster(monsterMaker());
   }
@@ -41,39 +39,17 @@ export default function App({ Component, pageProps }) {
     router.push("/playground");
   }
 
-  function handleClick(action) {
-    setMyMonster({ ...myMonster, emote: action });
-    setTimeout(() => {
-      setMyMonster({ ...myMonster, emote: null });
-    }, 3000);
-    focusRef.current.focus();
-  }
-
-  function handleSubmit(event) {
-    event.preventDefault();
-    setMyMonster({ ...myMonster, message: value });
-    setValue("");
-    setTimeout(() => {
-      setMyMonster({ ...myMonster, message: null });
-    }, 3000);
-    focusRef.current.focus();
-  }
-
   return (
     <>
       <GlobalStyle />
       <Component
         {...pageProps}
         onRandomizeMonster={handleRandomizeMonster}
-        onSubmit={handleSubmit}
         onSubmitId={handleSubmitId}
-        onClick={handleClick}
         myMonster={myMonster}
         fontFredoka={fontFredoka}
         fontYourGrace={fontYourGrace}
         focusRef={focusRef}
-        handleChange={handleChange}
-        value={value}
       />
     </>
   );

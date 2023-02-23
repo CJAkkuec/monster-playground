@@ -1,4 +1,4 @@
-//Zustand
+// Zustand
 const { createStore } = require("zustand/vanilla");
 
 const playgroundWidth = 1000;
@@ -8,9 +8,11 @@ const monsterHeight = 100;
 const iceCreamWidth = 50;
 const iceCreamHeight = 50;
 
+// Utils
 const getBoundingBox = require("./utils/getBoundingBox");
 const iceCreamCollisionCheck = require("./utils/iceCreamCollisionCheck");
 
+// Store
 const store = createStore((set, get) => ({
   monstersArray: [],
   updatePosition(monsterObject, move) {
@@ -65,21 +67,21 @@ const store = createStore((set, get) => ({
       }),
     });
   },
-  iceCreamPosition: { x: -1000, y: -1000 },
+  iceCreamPosition: { x: "-1000", y: "-1000" },
   updateIceCreamPosition(value) {
     set(() => {
       if (value) {
         return {
           iceCreamPosition: {
-            x: value,
-            y: value,
+            x: value.toString(),
+            y: value.toString(),
           },
         };
       } else
         return {
           iceCreamPosition: {
-            x: Math.floor(Math.random() * 900),
-            y: Math.floor(Math.random() * 900),
+            x: Math.floor(Math.random() * 900).toString(),
+            y: Math.floor(Math.random() * 900).toString(),
           },
         };
     });
@@ -87,7 +89,7 @@ const store = createStore((set, get) => ({
 }));
 const { getState, setState } = store;
 
-//Socket.io
+// Socket.io
 const io = require("socket.io")(3001, {
   cors: {
     origin: ["http://localhost:3000"],
@@ -95,6 +97,7 @@ const io = require("socket.io")(3001, {
   },
 });
 
+// IceCream Random Movement
 const updateIceCreamPosition = getState().updateIceCreamPosition;
 updateIceCreamPosition(-1000);
 setTimeout(() => {
@@ -112,9 +115,11 @@ setTimeout(() => {
   }, 20000);
 }, 10000);
 
+// Connection  ❌
+// Status: Ice Cream doesn't get loaded in immediately
 io.on("connection", (socket) => {
   io.emit("updateIceCreamPosition", getState().iceCreamPosition);
-  //this doesn't work?
+  //this doesn't work? maybe the interval is whack
 
   const monstersArray = getState().monstersArray;
   const monsterObject = socket.handshake.query;
@@ -130,6 +135,57 @@ io.on("connection", (socket) => {
 
   io.emit("allMonsters", getState().monstersArray);
 
+  //Messages ✅
+  socket.on("monsterMessage", ({ message }) => {
+    const monstersArray = getState().monstersArray;
+    const monsterToUpdate = monstersArray.find(
+      (monster) => monster.userId === monsterObject.userId
+    );
+
+    const updatedMonsterObject = {
+      ...monsterToUpdate,
+      message: message,
+    };
+
+    const updatedMonstersArray = monstersArray.map((monster) => {
+      if (monster.userId === updatedMonsterObject.userId) {
+        return updatedMonsterObject;
+      } else {
+        return monster;
+      }
+    });
+
+    setState({ monstersArray: updatedMonstersArray });
+
+    io.emit("allMonsters", getState().monstersArray);
+  });
+
+  //Emotes ✅
+  socket.on("monsterEmote", ({ emote }) => {
+    const monstersArray = getState().monstersArray;
+    const monsterToUpdate = monstersArray.find(
+      (monster) => monster.userId === monsterObject.userId
+    );
+
+    const updatedMonsterObject = {
+      ...monsterToUpdate,
+      emote: emote,
+    };
+
+    const updatedMonstersArray = monstersArray.map((monster) => {
+      if (monster.userId === updatedMonsterObject.userId) {
+        return updatedMonsterObject;
+      } else {
+        return monster;
+      }
+    });
+
+    setState({ monstersArray: updatedMonstersArray });
+
+    io.emit("allMonsters", getState().monstersArray);
+  });
+
+  //Movement + Collision Check ✅
   socket.on("monsterMove", ({ move }) => {
     const updatePosition = getState().updatePosition;
     updatePosition(monsterObject, move);
@@ -140,7 +196,6 @@ io.on("connection", (socket) => {
     );
 
     const currentMonsterPosition = { x: monsterToCheck.x, y: monsterToCheck.y };
-    console.log(currentMonsterPosition);
 
     const myMonsterBox = getBoundingBox(
       currentMonsterPosition,
@@ -158,6 +213,9 @@ io.on("connection", (socket) => {
       iceCreamWidth,
       iceCreamHeight
     );
+
+    console.log(myMonsterBox);
+    console.log(iceCreamBox);
 
     //Something about this is wonky
     if (
@@ -181,7 +239,6 @@ io.on("connection", (socket) => {
       const updatedMonsterObject = {
         ...monsterToUpdate,
         iceCream: `${newIceCreamNumber}`,
-        emote: "get",
       };
 
       const updatedMonstersArray = monstersArray.map((monster) => {
@@ -200,9 +257,9 @@ io.on("connection", (socket) => {
     }
   });
 
+  //Disconnect ✅
   socket.on("disconnect", () => {
     const monstersArray = getState().monstersArray;
-    console.log(`${socket.id} disconnected`);
     const filterId = monsterObject.userId;
 
     const newMonsterArray = monstersArray.filter(
